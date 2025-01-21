@@ -1,7 +1,7 @@
 using CustomerOrders.Application.CustomerOrder.Responses;
 using MediatR;
 
-namespace Customer.Application.CreateCustomer.Queries;
+namespace CustomerOrders.API.Application.CreateCustomer.Queries;
 
 public class GetAllCustomersOrdersCommand : IRequest<IEnumerable<CreateCustomerOrdersResponse>>
 {

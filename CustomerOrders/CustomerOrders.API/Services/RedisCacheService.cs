@@ -1,4 +1,4 @@
-﻿using Redis.Interfaces;
+﻿using CustomerOrders.API.Interfaces;
 using StackExchange.Redis;
 using IDatabase = StackExchange.Redis.IDatabase;
 
