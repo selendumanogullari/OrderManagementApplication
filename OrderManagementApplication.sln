@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{889AC2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Common\Logger\Logger.csproj", "{9B150208-2FF8-4729-8D63-8136016CA8E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis", "Redis\Redis.csproj", "{E1105DE4-D208-415C-8F19-217E9287A473}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,12 +43,17 @@ Global
 		{9B150208-2FF8-4729-8D63-8136016CA8E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B150208-2FF8-4729-8D63-8136016CA8E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B150208-2FF8-4729-8D63-8136016CA8E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1105DE4-D208-415C-8F19-217E9287A473}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1105DE4-D208-415C-8F19-217E9287A473}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1105DE4-D208-415C-8F19-217E9287A473}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1105DE4-D208-415C-8F19-217E9287A473}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9B150208-2FF8-4729-8D63-8136016CA8E1} = {889AC217-7FA7-41FE-8255-B4923EF10110}
+		{E1105DE4-D208-415C-8F19-217E9287A473} = {889AC217-7FA7-41FE-8255-B4923EF10110}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CC3B392E-2102-4F71-ABA1-AA137434C41C}
