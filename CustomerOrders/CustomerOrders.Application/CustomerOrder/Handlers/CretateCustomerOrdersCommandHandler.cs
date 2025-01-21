@@ -32,15 +32,15 @@ namespace CustomerOrders.Application.CustomerOrder.Handlers
                 }
 
                 // Yeni sipariş nesnesi oluşturuyoruz
-                var customerOrder = new Core.Entities.CustomerOrders
+                var customerOrder = new CustomerOrders.Core.Entities.CustomerOrders
                 {
-                    CustomerId = command.CustomerId,
-                    Status = command.Status,
-                    Description = command.Description,
-                    OrderItems = command.OrderItems.Select(item => new OrderItem
-                    {
-                        ProductId = item.ProductId,  // Ürün ID'si
-                    }).ToList()  // Siparişin içindeki ürünler
+                    //CustomerId = command.CustomerId,
+                    //Status = command.Status,
+                    //Description = command.Description,
+                    //OrderItems = command.OrderItems.Select(item => new OrderItem
+                    //{
+                    //    ProductId = item.ProductId,  // Ürün ID'si
+                    //}).ToList()  // Siparişin içindeki ürünler
                 };
                 // Siparişi veritabanına ekliyoruz
                 await _customerRepository.AddAsync(customerOrder);
@@ -48,15 +48,15 @@ namespace CustomerOrders.Application.CustomerOrder.Handlers
                 // Siparişin içerisindeki ürünlerin bilgilerini almak için OrderItems'ı ekliyoruz
                 var response = new CreateCustomerOrdersResponse
                 {
-                    CustomerId = customerOrder.CustomerId,
-                    Status = customerOrder.Status,
-                    Description = customerOrder.Description,
-                    OrderItems = customerOrder.OrderItems.Select(item => new CreateOrderItemResponse
-                    {
-                        ProductId = item.ProductId,
-                        //ProductName = item.Product.Name,  // Ürün adı
-                        //Price = item.Product.Price // Ürün fiyatı
-                    }).ToList()
+                    //CustomerId = customerOrder.CustomerId,
+                    //Status = customerOrder.Status,
+                    //Description = customerOrder.Description,
+                    //OrderItems = customerOrder.OrderItems.Select(item => new CreateOrderItemResponse
+                    //{
+                    //    ProductId = item.ProductId,
+                    //    //ProductName = item.Product.Name,  // Ürün adı
+                    //    //Price = item.Product.Price // Ürün fiyatı
+                    //}).ToList()
                 };
 
                 var orderMessage = JsonConvert.SerializeObject(customerOrder);

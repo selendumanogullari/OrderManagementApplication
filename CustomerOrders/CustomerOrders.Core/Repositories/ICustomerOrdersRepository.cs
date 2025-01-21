@@ -1,4 +1,5 @@
-﻿using static CustomerOrders.Core.Repositories.Base.IRepository;
+﻿
+using static CustomerOrders.Core.Repositories.Base.IRepository;
 
 namespace CustomerOrders.Core.Repositories
 {

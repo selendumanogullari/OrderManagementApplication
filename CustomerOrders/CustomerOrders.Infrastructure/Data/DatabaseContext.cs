@@ -11,25 +11,25 @@ namespace CustomerOrders.Infrastructure.Data
         }
         public DbSet<CustomerOrders.Core.Entities.Customer> Customers { get; set; }
         public DbSet<CustomerOrders.Core.Entities.Product> Products { get; set; }
-        public DbSet<CustomerOrders.Core.Entities.OrderItem> OrderItems { get; set; }
+        public DbSet<CustomerOrders.Core.Entities.OrderProduct> OrderProducts { get; set; }
         public DbSet<CustomerOrders.Core.Entities.CustomerOrders> CustomerOrders { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // OrderItem ve CustomerOrders arasındaki iliskisini tanımladım
-            modelBuilder.Entity<OrderItem>()
-                .HasOne(oi => oi.CustomerOrder)
-                .WithMany(co => co.OrderItems)
-                .HasForeignKey(oi => oi.CustomerOrderId)
-                .OnDelete(DeleteBehavior.Cascade); // Sipariş silindiğinde, ilgili urunleri de sildim
+            // OrderProduct ve CustomerOrders arasındaki ilişkiyi tanımlıyorum
+            modelBuilder.Entity<OrderProduct>()
+                .HasOne(op => op.Order)  // OrderProduct, CustomerOrder ile ilişkili
+                .WithMany(co => co.OrderProducts)  // CustomerOrder, birden fazla OrderProduct içerebilir
+                .HasForeignKey(op => op.OrderProductId)  // ForeignKey: CustomerOrderId
+                .OnDelete(DeleteBehavior.Cascade);  // Sipariş silindiğinde, ilgili OrderProduct'ları da sil
 
-            // OrderItem ve Product arasındaskı ilişkiyi tanımladim
-            modelBuilder.Entity<OrderItem>()
-                .HasOne(oi => oi.Product)
-                .WithMany()
-                .HasForeignKey(oi => oi.ProductId)
-                .OnDelete(DeleteBehavior.Restrict); // Ürün silinirse, siparislerdeki ürün referanslarını korumamıgzerekır
+            // OrderProduct ve Product arasındaki ilişkiyi tanımlıyorum
+            modelBuilder.Entity<OrderProduct>()
+                .HasOne(op => op.Product)  // OrderProduct, Product ile ilişkili
+                .WithMany()  // Product, birden fazla OrderProduct ile ilişkilendirilebilir (sadece tek yönlü ilişki)
+                .HasForeignKey(op => op.OrderProductId)  // ForeignKey: ProductId
+                .OnDelete(DeleteBehavior.Restrict);  // Ürün silindiğinde, OrderProduct ilişkisini korumak için RESTRICT kullanıyorum
         }
     }
 }

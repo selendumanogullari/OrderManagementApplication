@@ -1,3 +1,4 @@
+using CustomerOrders.API;
 using CustomerOrders.Infrastructure.Data;
 using Logging.Services;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,7 @@ public class Program
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {
-                //webBuilder.UseStartup<Startup>();
+                webBuilder.UseStartup<Startup>();
             });
     private static async Task CreateAndSeedDb(IHost host)
     {
