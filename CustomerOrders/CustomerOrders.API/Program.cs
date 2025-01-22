@@ -10,9 +10,6 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
-            .CreateLogger();
         var host = CreateHostBuilder(args).Build();
         await CreateAndSeedDb(host);
         host.Run();
@@ -23,7 +20,8 @@ public class Program
             .ConfigureLogging(logging =>
             {
                 logging.ClearProviders();
-                logging.AddSerilog(LoggerService.CreateLogger());
+                logging.AddSerilog();
+
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {
@@ -58,7 +56,7 @@ public class Program
                 var user = new CustomerOrders.Core.Entities.User
                 {
                     Username = "selen",
-                    PasswordHash = SSHA256Helper.HashPassword("123456"), // Þifreyi hashleyerek ekliyoruz
+                    PasswordHash = SSHA256Helper.HashPassword("123456"),
                 };
 
                 context.Users.Add(user);

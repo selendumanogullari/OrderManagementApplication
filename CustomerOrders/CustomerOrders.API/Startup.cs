@@ -16,6 +16,7 @@ using Redis.Services;
 using System.Reflection;
 using System.Text;
 using static CustomerOrders.Core.Repositories.Base.IRepository;
+using Serilog;
 
 namespace CustomerOrders.API
 {
@@ -36,8 +37,10 @@ namespace CustomerOrders.API
                            .AllowAnyMethod()
                            .AllowAnyHeader();
                 });
-            });
+            }); 
+
             services.AddControllers();
+            services.AddSingleton<Serilog.ILogger>(Log.Logger);
 
             var redisCacheUrl = Configuration["RedisCacheUrl"];
 
@@ -118,8 +121,8 @@ namespace CustomerOrders.API
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICustomerOrdersRepository, CustomerOrdersRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
-            //services.AddSingleton<IAuthService, AuthService>();
-            services.AddScoped<IAuthService, AuthService>(); // Yeni kod
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddHttpContextAccessor();
 
             services.AddSingleton<ITokenService, TokenService>();
             services.AddSingleton<IRabbitMQProducer, RabbitMQProducer>();
@@ -152,28 +155,37 @@ namespace CustomerOrders.API
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            try
             {
-                app.UseDeveloperExceptionPage();
+                if (env.IsDevelopment())
+                {
+                    app.UseDeveloperExceptionPage();
+                }
+
+                app.UseHttpsRedirection();
+                app.UseCors("AllowAllOrigins");
+
+                app.UseRouting();
+                app.UseAuthentication();
+                app.UseAuthorization();
+                app.UseMiddleware<LoggingMiddleware>();
+
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
+
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "CustomerOrders.API  V1");
+                });
             }
-
-            app.UseHttpsRedirection();
-            app.UseCors("AllowAllOrigins");
-
-            app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
+            catch (Exception ex)
             {
-                endpoints.MapControllers();
-            });
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CustomerOrders.API  V1");
-            });
+                throw ex;
+            }
         }
     }
 }
