@@ -1,5 +1,5 @@
 using CustomerOrders.API;
-using CustomerOrders.API.Helpers;
+using Authentication.Helpers;
 using CustomerOrders.Core.Entities;
 using CustomerOrders.Infrastructure.Data;
 using Logging.Services;

@@ -1,4 +1,4 @@
-﻿namespace CustomerOrders.API.Models
+﻿namespace Authentication.Models.Login
 {
     public class GenerateTokenRequest
     {

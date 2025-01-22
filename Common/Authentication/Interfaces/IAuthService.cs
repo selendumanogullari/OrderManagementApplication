@@ -1,6 +1,6 @@
-﻿using CustomerOrders.API.Models.Login;
+﻿using Authentication.Models.Login;
 
-namespace CustomerOrders.API.Interfaces
+namespace Authentication.Interfaces
 {
     public interface IAuthService
     {

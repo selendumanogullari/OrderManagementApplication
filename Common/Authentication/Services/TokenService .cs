@@ -1,11 +1,11 @@
-﻿using CustomerOrders.API.Interfaces;
-using CustomerOrders.API.Models;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using Authentication.Interfaces;
+using Authentication.Models.Login;
+using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using System.Text;
-
-namespace CustomerOrders.API.Services;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+namespace Authentication.Services;
 
 public class TokenService : ITokenService
 {

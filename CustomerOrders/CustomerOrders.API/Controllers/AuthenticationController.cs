@@ -1,5 +1,5 @@
-﻿using CustomerOrders.API.Interfaces;
-using CustomerOrders.API.Models.Login;
+﻿using Authentication.Interfaces;
+using Authentication.Models.Login;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace CustomerOrders.Controllers

@@ -1,11 +1,10 @@
-﻿using CustomerOrders.API.Helpers;
-using CustomerOrders.API.Interfaces;
-using CustomerOrders.API.Models;
-using CustomerOrders.API.Models.Login;
+﻿using Authentication.Helpers;
+using Authentication.Interfaces;
+using Authentication.Models.Login;
 using CustomerOrders.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace CustomerOrders.API.Services;
+namespace Authentication.Services;
 
 public class AuthService : IAuthService
 {

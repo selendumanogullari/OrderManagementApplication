@@ -1,4 +1,4 @@
-﻿namespace CustomerOrders.API.Models.Login
+﻿namespace Authentication.Models.Login
 {
     public class UserLoginResponse
     {

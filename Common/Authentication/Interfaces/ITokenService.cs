@@ -1,6 +1,6 @@
-﻿using CustomerOrders.API.Models;
-    
-namespace CustomerOrders.API.Interfaces
+﻿using Authentication.Models.Login;
+
+namespace Authentication.Interfaces
 {
     public interface ITokenService
     {

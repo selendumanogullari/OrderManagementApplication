@@ -1,5 +1,5 @@
-﻿using CustomerOrders.API.Interfaces;
-using CustomerOrders.API.Services;
+﻿using Authentication.Interfaces;
+using Authentication.Services;
 using CustomerOrders.Application.CustomerOrder.Handlers;
 using CustomerOrders.Application.RabbitMQ.Interfaces;
 using CustomerOrders.Core.Repositories;

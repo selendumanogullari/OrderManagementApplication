@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Authentication\Authentication.csproj" />
     <ProjectReference Include="..\..\Common\Logger\Logger.csproj" />
     <ProjectReference Include="..\..\Redis\Redis.csproj" />
     <ProjectReference Include="..\CustomerOrders.Application\CustomerOrders.Application.csproj" />
