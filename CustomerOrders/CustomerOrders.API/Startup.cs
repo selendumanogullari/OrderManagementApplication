@@ -5,13 +5,15 @@ using CustomerOrders.Application.RabbitMQ.Interfaces;
 using CustomerOrders.Core.Repositories;
 using CustomerOrders.Infrastructure.Data;
 using CustomerOrders.Infrastructure.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
+using Redis.Interfaces;
+using Redis.Services;
 using System.Reflection;
-using MediatR;
 using System.Text;
 using static CustomerOrders.Core.Repositories.Base.IRepository;
 
@@ -36,6 +38,20 @@ namespace CustomerOrders.API
                 });
             });
             services.AddControllers();
+
+            var redisCacheUrl = Configuration["RedisCacheUrl"];
+
+            if (string.IsNullOrEmpty(redisCacheUrl))
+            {
+                throw new Exception("RedisCacheUrl appsettings.json içinde tanımlanmalı.");
+            }
+
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                var configuration = ConfigurationOptions.Parse(redisCacheUrl, true);
+                return ConnectionMultiplexer.Connect(configuration);
+            });
+
             services.AddApiVersioning();
 
             services.AddDbContext<DatabaseContext>(options =>
@@ -46,8 +62,11 @@ namespace CustomerOrders.API
             services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
                 var configuration = ConfigurationOptions.Parse(Configuration["RedisCacheUrl"]);
-                configuration.AbortOnConnectFail = false; return ConnectionMultiplexer.Connect(configuration);
+                configuration.AbortOnConnectFail = false;
+                return ConnectionMultiplexer.Connect(configuration);
             });
+
+            services.AddSingleton<Redis.Interfaces.ICacheService, Redis.Services.RedisCacheService>();
 
             services.AddStackExchangeRedisCache(options =>
             {
@@ -60,11 +79,9 @@ namespace CustomerOrders.API
                 {
                     var executingAssembly = Assembly.GetExecutingAssembly();
 
-                    //var xmlFile = Path.Combine(AppContext.BaseDirectory, "Customer.API.xml");
                     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{executingAssembly.GetName().Name}.xml"));
 
-                    //c.IncludeXmlComments(xmlFile);
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Customer API", Version = "v1" });
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "OrderManagementApplication API", Version = "v1" });
                     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                     {
                         Name = "Authorization",
@@ -91,7 +108,7 @@ namespace CustomerOrders.API
                 catch (Exception ex)
                 {
 
-                    throw;
+                    throw ex;
                 }
             });
 
@@ -101,7 +118,6 @@ namespace CustomerOrders.API
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICustomerOrdersRepository, CustomerOrdersRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
-            services.AddSingleton<ICacheService, RedisCacheService>();
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<ITokenService, TokenService>();
             services.AddSingleton<IRabbitMQProducer, RabbitMQProducer>();
@@ -154,7 +170,7 @@ namespace CustomerOrders.API
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Customer API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CustomerOrders.API  V1");
             });
         }
     }

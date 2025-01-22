@@ -1,3 +1,5 @@
+using CustomerOrders.API;
+using CustomerOrders.Core.Entities;
 using CustomerOrders.Infrastructure.Data;
 using Logging.Services;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +26,7 @@ public class Program
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {
-                //webBuilder.UseStartup<Startup>();
+                webBuilder.UseStartup<Startup>();
             });
     private static async Task CreateAndSeedDb(IHost host)
     {
@@ -126,35 +128,35 @@ public class Program
                         // Sipariþleri (CustomerOrders) ekleyelim
                         var customerOrders = new List<CustomerOrders.Core.Entities.CustomerOrders>
                         {
-                            //new ustomerOrders.Core.Entities.CustomerOrders
-                            //{
-                            //    CustomerId = customer1.Id,
-                            //    Status = 1, // Sipariþ durumu: 1 (Örnek)
-                            //    Description = "Ýlk sipariþ",
-                            //    OrderItems = new List<OrderItem>
-                            //    {
-                            //        new OrderItem { ProductId = product1.Id }, // Ürün 1
-                            //        new OrderItem { ProductId = product2.Id }  // Ürün 2
-                            //    }
-                            //},
-                            //new CustomerOrders.Core.Entities.CustomerOrders
-                            //{
-                            //    CustomerId = customer1.Id,
-                            //    OrderProducts = new List<OrderProduct>
-                            //    {
-                            //        new OrderItem { ProductId = product2.Id }  // Ürün 2
-                            //    }
-                            //},
-                            //new CustomerOrders
-                            //{
-                            //    CustomerId = customer2.Id,
-                            //    Status = 1, // Sipariþ durumu: 1 (Örnek)
-                            //    Description = "Üçüncü sipariþ",
-                            //    OrderItems = new List<OrderItem>
-                            //    {
-                            //        new OrderProduct { p = product3.Id }  // Ürün 3
-                            //    }
-                            //}
+                            new CustomerOrders.Core.Entities.CustomerOrders
+                            {
+                                CustomerId = customer1.Id,
+                                Status = 1, // Sipariþ durumu: 1 (Örnek)
+                                Description = "Ýlk sipariþ",
+                                OrderItems = new List<OrderItem>
+                                {
+                                    new OrderItem { ProductId = product1.Id }, // Ürün 1
+                                    new OrderItem { ProductId = product2.Id }  // Ürün 2
+                                }
+                            },
+                            new CustomerOrders.Core.Entities.CustomerOrders
+                            {
+                                CustomerId = customer1.Id,
+                                OrderItems = new List<OrderItem>
+                                {
+                                    new OrderItem { ProductId = product2.Id }  // Ürün 2
+                                }
+                            },
+                            new CustomerOrders.Core.Entities.CustomerOrders
+                            {
+                                CustomerId = customer2.Id,
+                                Status = 1, // Sipariþ durumu: 1 (Örnek)
+                                Description = "Üçüncü sipariþ",
+                                OrderItems = new List<OrderItem>
+                                {
+                                    new OrderItem { ProductId = product3.Id }  // Ürün 3
+                                }
+                            }
                         };
                         await context.CustomerOrders.AddRangeAsync(customerOrders);
                         await context.SaveChangesAsync();

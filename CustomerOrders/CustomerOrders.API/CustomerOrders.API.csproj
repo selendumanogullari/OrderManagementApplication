@@ -24,7 +24,6 @@
     <PackageReference Include="Serilog" Version="4.2.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
-    <PackageReference Include="StackExchange.Redis" Version="2.8.24" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
@@ -35,5 +34,9 @@
     <ProjectReference Include="..\CustomerOrders.Core\CustomerOrders.Core.csproj" />
     <ProjectReference Include="..\CustomerOrders.Infrastructure\CustomerOrders.Infrastructure.csproj" />
   </ItemGroup>
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<OutputPath>bin\Debug\net8.0\</OutputPath>
+	</PropertyGroup>
 
 </Project>
