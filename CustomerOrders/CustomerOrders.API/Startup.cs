@@ -56,7 +56,7 @@ namespace CustomerOrders.API
 
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("CustomerConnection"),
-                sqlOptions => sqlOptions.MigrationsAssembly("Customer.API")),
+                sqlOptions => sqlOptions.MigrationsAssembly("CustomerOrders.API")),
                  ServiceLifetime.Scoped);
 
             services.AddSingleton<IConnectionMultiplexer>(sp =>
@@ -118,7 +118,9 @@ namespace CustomerOrders.API
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICustomerOrdersRepository, CustomerOrdersRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
-            services.AddSingleton<IAuthService, AuthService>();
+            //services.AddSingleton<IAuthService, AuthService>();
+            services.AddScoped<IAuthService, AuthService>(); // Yeni kod
+
             services.AddSingleton<ITokenService, TokenService>();
             services.AddSingleton<IRabbitMQProducer, RabbitMQProducer>();
             services.AddSingleton<RabbitMQConsumer>();

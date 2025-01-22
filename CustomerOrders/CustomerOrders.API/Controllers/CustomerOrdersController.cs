@@ -1,5 +1,4 @@
-﻿using CustomerOrders.API.Controllers;
-using CustomerOrders.Application.CustomerOrder.Commands;
+﻿using CustomerOrders.Application.CustomerOrder.Commands;
 using CustomerOrders.Application.CustomerOrder.Responses;
 using CustomerOrders.Infrastructure.Data;
 using MediatR;
@@ -9,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Redis.Interfaces;
 
-namespace Customer.API.Controllers
+namespace CustomerOrders.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]

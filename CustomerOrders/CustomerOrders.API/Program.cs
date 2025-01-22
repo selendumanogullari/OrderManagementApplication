@@ -1,4 +1,5 @@
 using CustomerOrders.API;
+using CustomerOrders.API.Helpers;
 using CustomerOrders.Core.Entities;
 using CustomerOrders.Infrastructure.Data;
 using Logging.Services;
@@ -52,6 +53,18 @@ public class Program
     {
         try
         {
+            if (!context.Users.Any())
+            {
+                var user = new CustomerOrders.Core.Entities.User
+                {
+                    Username = "selen",
+                    PasswordHash = SSHA256Helper.HashPassword("123456"), // Þifreyi hashleyerek ekliyoruz
+                };
+
+                context.Users.Add(user);
+                context.SaveChanges();
+            }
+
             if (!context.Customers.Any())
             {
                 var customers = new List<CustomerOrders.Core.Entities.Customer>
@@ -137,11 +150,14 @@ public class Program
                                 {
                                     new OrderItem { ProductId = product1.Id }, // Ürün 1
                                     new OrderItem { ProductId = product2.Id }  // Ürün 2
-                                }
+                                },
+
                             },
                             new CustomerOrders.Core.Entities.CustomerOrders
                             {
                                 CustomerId = customer1.Id,
+                                Status=1,
+                                Description = "Ýkinci sipariþ",
                                 OrderItems = new List<OrderItem>
                                 {
                                     new OrderItem { ProductId = product2.Id }  // Ürün 2

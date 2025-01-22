@@ -9,6 +9,7 @@ namespace CustomerOrders.Infrastructure.Data
         {
 
         }
+        public DbSet<CustomerOrders.Core.Entities.User> Users { get; set; }
         public DbSet<CustomerOrders.Core.Entities.Customer> Customers { get; set; }
         public DbSet<CustomerOrders.Core.Entities.Product> Products { get; set; }
         public DbSet<CustomerOrders.Core.Entities.OrderItem> OrderItems { get; set; }
