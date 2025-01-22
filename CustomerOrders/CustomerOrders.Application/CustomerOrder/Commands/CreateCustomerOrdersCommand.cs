@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace CustomerOrders.Application.CustomerOrder.Commands
@@ -15,20 +16,16 @@ namespace CustomerOrders.Application.CustomerOrder.Commands
         public string Description { get; set; }  // Sipariş açıklaması
 
         // Siparişin içindeki ürünlerin listesi
-        public List<CreateOrderItemCommand> OrderItems { get; set; }  // Her bir ürünün sipariş adedi ve ürünü
+        public List<CreateOrderProductCommand> OrderProducts { get; set; }  // Her bir ürünün sipariş adedi ve ürünü
 
-        public CreateCustomerOrdersCommand(int customerId, int status, string description, List<CreateOrderItemCommand> orderItems)
-        {
-            CustomerId = customerId;
-            Status = status;
-            Description = description;
-            OrderItems = orderItems ?? new List<CreateOrderItemCommand>();
-        }
+        [JsonIgnore]
+        public decimal TotalAmount { get; set; } // Toplam tutar hesaplanacak
+       
     }
 
-    public class CreateOrderItemCommand
+    public class CreateOrderProductCommand
     {
         public int ProductId { get; set; }  // Ürünün ID'si
-        //public int Quantity { get; set; }  // Siparişteki ürün adedi
+        public int Quantity { get; set; }  // Siparişteki ürün adedi
     }
 }

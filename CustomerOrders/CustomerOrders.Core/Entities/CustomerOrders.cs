@@ -6,21 +6,22 @@ namespace CustomerOrders.Core.Entities
     public class CustomerOrders : Entity
     {
         public int CustomerId { get; set; }
-        //public int ProductId { get; set; }
         public int Status { get; set; }
+        public decimal TotalAmount { get; set; }
+        
 
         [JsonIgnore]
         public Customer Customer { get; set; }
-        public List<OrderItem> OrderItems { get; set; } // Bir siparişin içinde birden fazla ürün olabilir
-        //public ICollection<Product> Product { get; set; }
+        public List<OrderProduct> OrderProducts { get; set; } // Bir siparişin içinde birden fazla ürün olabilir
 
     }
-    public class OrderItem 
+    public class OrderProduct
     {
         public int Id { get; set; } 
         public int ProductId { get; set; }  // Ürün bilgisi
         public int CustomerOrderId { get; set; } // Siparişi referans eder
-        public Product Product { get; set; } // Ürün ilişkisi
+        public int Quantity { get; set; } // Birim fiyat
+        public Product Product { get; set; } // Birim fiyat
 
         [JsonIgnore]
         public CustomerOrders CustomerOrder { get; set; } // Sipariş ilişkisi

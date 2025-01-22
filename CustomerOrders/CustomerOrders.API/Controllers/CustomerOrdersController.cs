@@ -16,7 +16,7 @@ namespace CustomerOrders.API.Controllers
     /// API controller for managing customer orders. Allows retrieving, updating, and managing customer orders.
     /// </summary>
 
-    [Authorize]
+    //[Authorize]
     public class CustomerOrdersController : ApiController
     {
         private readonly IMediator _mediator;
@@ -58,7 +58,7 @@ namespace CustomerOrders.API.Controllers
                 {
                     customerOrders = await _context.CustomerOrders
                         .Include(co => co.Customer)
-                        .Include(co => co.OrderItems)
+                        .Include(co => co.OrderProducts)
                         .Where(co => co.Customer.Name == customerName)
                         .ToListAsync();
 
@@ -131,8 +131,8 @@ namespace CustomerOrders.API.Controllers
             {
                 var customerOrder = await _context.CustomerOrders
                  .Include(co => co.Customer)
-                 .Include(co => co.OrderItems)
-                 .Where(co => co.Customer.Id == customerId && co.OrderItems.Any(m => m.CustomerOrderId == customerOrderId))
+                 .Include(co => co.OrderProducts)
+                 .Where(co => co.Customer.Id == customerId && co.OrderProducts.Any(m => m.CustomerOrderId == customerOrderId))
                  .FirstOrDefaultAsync();
 
                 if (customerOrder == null)

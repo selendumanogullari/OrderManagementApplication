@@ -2,9 +2,7 @@
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace CustomerOrders.Application.CustomerOrder.Commands
 {
@@ -13,13 +11,15 @@ namespace CustomerOrders.Application.CustomerOrder.Commands
         public int Status { get; set; }
         public string Description { get; set; }
         public int CustomerId { get; set; }
-        public IEnumerable<OrderItemDto> OrderItems { get; set; }
+        public int CustomerOrderId { get; set; }
+        public IEnumerable<OrderProductDto> OrderProducts { get; set; }
 
-        public class OrderItemDto
+        public class OrderProductDto
         {
-            public int Id { get; set; }
-            public int ProductId { get; set; }
+            [JsonIgnore]
+            public int Id { get; set; } // Var olan ürünün ID'si
+            public int? ProductId { get; set; } // Ürün ID'si - Nullable, sadece yeni ürün ekleniyorsa gerekebilir
+            public int? Quantity { get; set; } // Ürün adedi - Nullable, sadece adet güncelleniyorsa gerekebilir
         }
-
     }
 }

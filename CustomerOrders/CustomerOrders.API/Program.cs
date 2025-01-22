@@ -102,7 +102,7 @@ public class Program
                     {
                         Name = "tv",
                         Description = "televizyon",
-                        Price = 100,
+                        Price = 78,
                         Quanttity = 5,
                         Barcode = "SAMSUNG12562",
                     },
@@ -110,7 +110,7 @@ public class Program
                     {
                          Name = "kitap",
                          Description = "korku roman",
-                         Price = 100,
+                         Price = 24,
                          Quanttity = 5,
                          Barcode = "BOOKS12562",
                     },
@@ -118,7 +118,7 @@ public class Program
                     {
                          Name = "buzdolabý",
                          Description = "korku roman",
-                         Price = 100,
+                         Price = 1300,
                          Quanttity = 5,
                          Barcode = "BUZS12562",
                     }
@@ -141,37 +141,39 @@ public class Program
                         // Sipariþleri (CustomerOrders) ekleyelim
                         var customerOrders = new List<CustomerOrders.Core.Entities.CustomerOrders>
                         {
-                            new CustomerOrders.Core.Entities.CustomerOrders
+                           new CustomerOrders.Core.Entities.CustomerOrders
                             {
                                 CustomerId = customer1.Id,
                                 Status = 1, // Sipariþ durumu: 1 (Örnek)
                                 Description = "Ýlk sipariþ",
-                                OrderItems = new List<OrderItem>
+                                OrderProducts = new List<OrderProduct>
                                 {
-                                    new OrderItem { ProductId = product1.Id }, // Ürün 1
-                                    new OrderItem { ProductId = product2.Id }  // Ürün 2
+                                    new OrderProduct { ProductId = product1.Id, Quantity = 1 }, // Ürün 1, Miktar 1
+                                    new OrderProduct { ProductId = product2.Id, Quantity = 2 }  // Ürün 2, Miktar 2
                                 },
-
+                                TotalAmount = (product1.Price * 1) + (product2.Price * 2) // Ürünlerin fiyatlarýný miktarlarý ile çarpýp topluyoruz
                             },
                             new CustomerOrders.Core.Entities.CustomerOrders
                             {
                                 CustomerId = customer1.Id,
-                                Status=1,
+                                Status = 1, // Sipariþ durumu: 1 (Örnek)
                                 Description = "Ýkinci sipariþ",
-                                OrderItems = new List<OrderItem>
+                                OrderProducts = new List<OrderProduct>
                                 {
-                                    new OrderItem { ProductId = product2.Id }  // Ürün 2
-                                }
+                                    new OrderProduct { ProductId = product2.Id, Quantity = 1 }  // Ürün 2, Miktar 1
+                                },
+                                TotalAmount = product2.Price * 1 // Ürünün fiyatýný miktar ile çarpýyoruz
                             },
                             new CustomerOrders.Core.Entities.CustomerOrders
                             {
                                 CustomerId = customer2.Id,
                                 Status = 1, // Sipariþ durumu: 1 (Örnek)
                                 Description = "Üçüncü sipariþ",
-                                OrderItems = new List<OrderItem>
+                                OrderProducts = new List<OrderProduct>
                                 {
-                                    new OrderItem { ProductId = product3.Id }  // Ürün 3
-                                }
+                                    new OrderProduct { ProductId = product3.Id, Quantity = 2 }  // Ürün 3, Miktar 2
+                                },
+                                TotalAmount = product3.Price * 2 // Ürünün fiyatýný miktar ile çarpýyoruz
                             }
                         };
                         await context.CustomerOrders.AddRangeAsync(customerOrders);

@@ -69,6 +69,7 @@ namespace CustomerOrders.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -83,25 +84,26 @@ namespace CustomerOrders.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderItems",
+                name: "OrderProducts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    CustomerOrderId = table.Column<int>(type: "int", nullable: false)
+                    CustomerOrderId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.PrimaryKey("PK_OrderProducts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderItems_CustomerOrders_CustomerOrderId",
+                        name: "FK_OrderProducts_CustomerOrders_CustomerOrderId",
                         column: x => x.CustomerOrderId,
                         principalTable: "CustomerOrders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderItems_Products_ProductId",
+                        name: "FK_OrderProducts_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -114,13 +116,13 @@ namespace CustomerOrders.API.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_CustomerOrderId",
-                table: "OrderItems",
+                name: "IX_OrderProducts_CustomerOrderId",
+                table: "OrderProducts",
                 column: "CustomerOrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_ProductId",
-                table: "OrderItems",
+                name: "IX_OrderProducts_ProductId",
+                table: "OrderProducts",
                 column: "ProductId");
         }
 
@@ -128,7 +130,7 @@ namespace CustomerOrders.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OrderItems");
+                name: "OrderProducts");
 
             migrationBuilder.DropTable(
                 name: "Users");

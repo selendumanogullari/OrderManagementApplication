@@ -3,8 +3,10 @@ using CustomerOrders.Application.CustomerOrder.Responses;
 using CustomerOrders.Application.RabbitMQ.Interfaces;
 using CustomerOrders.Core.Entities;
 using CustomerOrders.Core.Repositories;
+using CustomerOrders.Infrastructure.Data;
 using MediatR;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace CustomerOrders.Application.CustomerOrder.Handlers
 {
@@ -12,37 +14,44 @@ namespace CustomerOrders.Application.CustomerOrder.Handlers
     {
         public readonly ICustomerOrdersRepository _customerRepository;
         private readonly RabbitMQProducer _rabbitMQProducer;
+        private readonly DatabaseContext _context;
 
 
-        public CreateCustomerOrdersCommandHandler(ICustomerOrdersRepository customerRepository)
+        public CreateCustomerOrdersCommandHandler(ICustomerOrdersRepository customerRepository, DatabaseContext context)
         {
             _customerRepository = customerRepository;
             _rabbitMQProducer = new RabbitMQProducer();
+            _context = context;
         }
         public async Task<CreateCustomerOrdersResponse> Handle(CreateCustomerOrdersCommand command, CancellationToken cancellationToken)
         {
             try
             {
-                var customer = _customerRepository.GetByIdAsync(command.CustomerId);
+                var customer = await _customerRepository.GetByIdAsync(command.CustomerId);
                 // Müşteri kontrolü yapalım
 
                 if (customer == null)
                 {
                     throw new ApplicationException("Müşteri bulunamadı");
                 }
-
-                // Yeni sipariş nesnesi oluşturuyoruz
                 var customerOrder = new Core.Entities.CustomerOrders
                 {
                     CustomerId = command.CustomerId,
                     Status = command.Status,
                     Description = command.Description,
-                    OrderItems = command.OrderItems.Select(item => new OrderItem
+                    OrderProducts = command.OrderProducts.Select(item => new OrderProduct
                     {
-                        ProductId = item.ProductId,  // Ürün ID'si
-                    }).ToList()  // Siparişin içindeki ürünler
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity // Ürün ID'si ve Miktar
+                    }).ToList(),  // Siparişin içindeki ürünler
+                    TotalAmount = command.OrderProducts
+                     .Sum(item => item.Quantity * _context.Products
+                    .FirstOrDefault(p => p.Id == item.ProductId)?.Price ?? 0) // Fiyatları çarpıyoruz ve topluyoruz
                 };
+
                 // Siparişi veritabanına ekliyoruz
+                //customerOrder.TotalAmount = customerOrder.OrderProducts.Sum(op => op.Price);
+
                 await _customerRepository.AddAsync(customerOrder);
 
                 // Siparişin içerisindeki ürünlerin bilgilerini almak için OrderItems'ı ekliyoruz
@@ -51,12 +60,14 @@ namespace CustomerOrders.Application.CustomerOrder.Handlers
                     CustomerId = customerOrder.CustomerId,
                     Status = customerOrder.Status,
                     Description = customerOrder.Description,
-                    OrderItems = customerOrder.OrderItems.Select(item => new CreateOrderItemResponse
+                    OrderProducts = customerOrder.OrderProducts.Select(item => new CreateOrderProductsResponse
                     {
                         ProductId = item.ProductId,
                         //ProductName = item.Product.Name,  // Ürün adı
-                        //Price = item.Product.Price // Ürün fiyatı
-                    }).ToList()
+                        //Price = item.Product.Price, // Ürün fiyatı
+                        Quantity = item.Quantity // Ürün fiyatı
+                    }).ToList(),
+                    TotalAmount = customerOrder.TotalAmount
                 };
 
                 var orderMessage = JsonConvert.SerializeObject(customerOrder);

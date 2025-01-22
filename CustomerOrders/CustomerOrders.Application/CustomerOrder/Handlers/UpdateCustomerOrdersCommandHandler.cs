@@ -8,61 +8,73 @@ namespace CustomerOrders.Application.CustomerOrder.Handlers
 {
     public class UpdateCustomerOrdersCommandHandler : IRequestHandler<UpdateCustomerOrdersCommand, UpdateCustomerOrdersResponse>
     {
-        public readonly ICustomerOrdersRepository _customerOrdersRepository;
+        private readonly ICustomerOrdersRepository _customerOrdersRepository;
 
-        public UpdateCustomerOrdersCommandHandler(ICustomerOrdersRepository customerOrdersRepository, ICustomerOrdersRepository customerRepository)
+        public UpdateCustomerOrdersCommandHandler(ICustomerOrdersRepository customerOrdersRepository)
         {
             _customerOrdersRepository = customerOrdersRepository;
         }
+
         public async Task<UpdateCustomerOrdersResponse> Handle(UpdateCustomerOrdersCommand command, CancellationToken cancellationToken)
         {
             try
-            { // Öncelikle CustomerId'ye göre müşteri siparişlerini alalım
-                var customerOrders = _customerOrdersRepository.GetByCustomerAndOrderAsync(command.CustomerId).Result.ToList();
+            {
+                var customerOrders = await _customerOrdersRepository.GetByCustomerOrdersWithIdAsync(command.CustomerOrderId);
 
-                // Mevcut siparişlerin üzerinden geçelim ve OrderItems'ları güncelleyelim
-                foreach (var orderItemDto in command.OrderItems)
-                {
-                    var existingOrder = customerOrders.FirstOrDefault(o => o.OrderItems.Any(oi => oi.Id == orderItemDto.Id));
-
-                    if (existingOrder != null)
-                    {
-                        var existingItem = existingOrder.OrderItems.First(oi => oi.Id == orderItemDto.Id);
-                        existingItem.ProductId = orderItemDto.ProductId;
-                    }
-                    else
-                    {
-                        // Yeni item ekleme (müşterinin mevcut siparişlerinden birine)
-                        customerOrders.First().OrderItems.Add(new OrderItem { Id = orderItemDto.Id, ProductId = orderItemDto.ProductId });
-                    }
-                }
-
-                // Silinecek itemları belirleyin
                 foreach (var customerOrder in customerOrders)
                 {
-                    var itemsToRemove = customerOrder.OrderItems.Where(oi => !command.OrderItems.Any(dto => dto.Id == oi.Id)).ToList();
-                    foreach (var itemToRemove in itemsToRemove)
+                    foreach (var orderProductDto in command.OrderProducts)
                     {
-                        customerOrder.OrderItems.Remove(itemToRemove);
+                        var existingProduct = customerOrder.OrderProducts
+                            .FirstOrDefault(op => op.ProductId == orderProductDto.ProductId);
+
+                        if (existingProduct != null)
+                        {
+                            if (existingProduct.Product.Quanttity >= orderProductDto.Quantity)
+                            {
+                                existingProduct.Quantity = (int)orderProductDto.Quantity;
+
+                                customerOrder.TotalAmount = (decimal)customerOrder.OrderProducts
+                                 .Sum(item => item.Quantity * existingProduct.Product.Price);
+
+                            }
+                            else
+                            {
+                                throw new ApplicationException(
+                                        $"Stok yetersiz. Ürün: {existingProduct.Product.Name}, Mevcut Stok: {existingProduct.Product.Quanttity}, Talep Edilen: {orderProductDto.Quantity}");
+                            }
+                        }
+                        else
+                        {
+                            var firstOrder = customerOrders.FirstOrDefault();
+                            if (firstOrder != null)
+                            {
+                                firstOrder.OrderProducts.Add(new OrderProduct
+                                {
+                                    ProductId = (int)orderProductDto.ProductId,
+                                    Quantity = (int)orderProductDto.Quantity
+                                });
+                            }
+                            throw new ApplicationException(
+                                       $"Güncellemek istediğiniz ürün bu siparişte bulunamadı: {orderProductDto.ProductId}, Dilerseniz yeni sipariş oluşturupi, güncelleyebilirsiniz");
+                        }
                     }
-                }
-                foreach (var customerOrder in customerOrders)
-                {
-                    customerOrder.Description = command.Description;
-                    customerOrder.Status = command.Status;
                     await _customerOrdersRepository.UpdateAsync(customerOrder);
+
                 }
+
                 var response = new UpdateCustomerOrdersResponse
                 {
                     CustomerId = command.CustomerId,
+                    CustomerOrderId = command.CustomerOrderId,
                     Message = "Sipariş durumu başarıyla güncellendi."
                 };
+
                 return response;
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                throw new ApplicationException("Sipariş güncellenirken bir hata oluştu", ex);
             }
         }
     }

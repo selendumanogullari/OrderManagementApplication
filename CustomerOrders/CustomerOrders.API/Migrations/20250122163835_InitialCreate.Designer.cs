@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CustomerOrders.API.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250122131613_InitialCreate")]
+    [Migration("20250122163835_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -86,6 +86,9 @@ namespace CustomerOrders.API.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -93,7 +96,7 @@ namespace CustomerOrders.API.Migrations
                     b.ToTable("CustomerOrders");
                 });
 
-            modelBuilder.Entity("CustomerOrders.Core.Entities.OrderItem", b =>
+            modelBuilder.Entity("CustomerOrders.Core.Entities.OrderProduct", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -107,13 +110,16 @@ namespace CustomerOrders.API.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerOrderId");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderProducts");
                 });
 
             modelBuilder.Entity("CustomerOrders.Core.Entities.Product", b =>
@@ -179,10 +185,10 @@ namespace CustomerOrders.API.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("CustomerOrders.Core.Entities.OrderItem", b =>
+            modelBuilder.Entity("CustomerOrders.Core.Entities.OrderProduct", b =>
                 {
                     b.HasOne("CustomerOrders.Core.Entities.CustomerOrders", "CustomerOrder")
-                        .WithMany("OrderItems")
+                        .WithMany("OrderProducts")
                         .HasForeignKey("CustomerOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -200,7 +206,7 @@ namespace CustomerOrders.API.Migrations
 
             modelBuilder.Entity("CustomerOrders.Core.Entities.CustomerOrders", b =>
                 {
-                    b.Navigation("OrderItems");
+                    b.Navigation("OrderProducts");
                 });
 #pragma warning restore 612, 618
         }

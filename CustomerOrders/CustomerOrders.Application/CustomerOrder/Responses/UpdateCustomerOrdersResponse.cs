@@ -10,6 +10,7 @@ namespace CustomerOrders.Application.CustomerOrder.Responses
     {
         public int OrderId { get; set; }
         public int CustomerId { get; set; }
+        public int CustomerOrderId { get; set; }
         public string Message { get; set; }
     }
 }

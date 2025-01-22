@@ -10,6 +10,7 @@ namespace CustomerOrders.Core.Repositories
     public interface ICustomerOrdersRepository : IRepository<CustomerOrders.Core.Entities.CustomerOrders>
     {
         Task<List<CustomerOrders.Core.Entities.CustomerOrders>> GetByCustomerAndOrderAsync(int customerId);
+        Task<List<CustomerOrders.Core.Entities.CustomerOrders>> GetByCustomerOrdersWithIdAsync(int customerOrderId);
 
     }
 }
