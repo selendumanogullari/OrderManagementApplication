@@ -5,19 +5,17 @@ using CustomerOrders.Application.RabbitMQ.Interfaces;
 using CustomerOrders.Core.Repositories;
 using CustomerOrders.Infrastructure.Data;
 using CustomerOrders.Infrastructure.Repositories;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using StackExchange.Redis;
-using Redis.Interfaces;
-using Redis.Services;
 using System.Reflection;
 using System.Text;
 using static CustomerOrders.Core.Repositories.Base.IRepository;
-using Serilog;
-
 namespace CustomerOrders.API
 {
     public class Startup
@@ -37,9 +35,15 @@ namespace CustomerOrders.API
                            .AllowAnyMethod()
                            .AllowAnyHeader();
                 });
-            }); 
+            });
 
             services.AddControllers();
+            services.AddControllers()
+            .AddFluentValidation(fv =>
+            {
+                fv.RegisterValidatorsFromAssemblyContaining<CreateCustomerOrdersCommandValidator>();
+            });
+
             services.AddSingleton<Serilog.ILogger>(Log.Logger);
 
             var redisCacheUrl = Configuration["RedisCacheUrl"];

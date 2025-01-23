@@ -27,6 +27,15 @@ namespace CustomerOrders.Application.CustomerOrder.Handlers
         {
             try
             {
+                var validator = new CreateCustomerOrdersCommandValidator();
+                var validationResult = validator.Validate(command);
+
+                if (!validationResult.IsValid)
+                {
+                    var errorMessages = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
+                    throw new ApplicationException($"Validation failed: {errorMessages}");
+                }
+
                 var customer = await _customerRepository.GetByIdAsync(command.CustomerId);
                 // Müşteri kontrolü yapalım
 
