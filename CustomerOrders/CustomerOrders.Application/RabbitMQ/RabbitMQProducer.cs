@@ -13,6 +13,8 @@ namespace CustomerOrders.Application.RabbitMQ.Interfaces
             try
             {
                 var factory = new ConnectionFactory() { HostName = _hostName };
+                factory.Uri = new Uri("amqps://inggfgpc:AZ1qC8UyCg5up82NsNeALVy-Fl0GokBp@whale.rmq.cloudamqp.com/inggfgpc");
+
                 using (var connection = factory.CreateConnection())
                 using (var channel = connection.CreateModel())
                 {

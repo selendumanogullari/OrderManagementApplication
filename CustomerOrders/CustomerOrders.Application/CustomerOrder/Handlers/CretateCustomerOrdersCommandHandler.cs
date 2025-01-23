@@ -69,8 +69,8 @@ namespace CustomerOrders.Application.CustomerOrder.Handlers
                     }).ToList(),
                     TotalAmount = customerOrder.TotalAmount
                 };
-
-                var orderMessage = JsonConvert.SerializeObject(customerOrder);
+                var settings = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+                var orderMessage = JsonConvert.SerializeObject(customerOrder, settings);
 
                 _rabbitMQProducer.PublishOrderMessage(orderMessage);
 
